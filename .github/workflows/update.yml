@@ -1,0 +1,41 @@
+name: Weekly EPL Prediction Update
+
+# Trigger: Run every Tuesday at 02:00 UTC (Adjust as needed)
+# Also runs manually if you click "Run workflow" in GitHub Actions tab
+on:
+  schedule:
+    - cron: '0 2 * * 2' 
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Prediction Script
+        env:
+          FOOTBALL_API_KEY: ${{ secrets.FOOTBALL_API_KEY }}
+        run: python Model.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add updated_results.csv predicted_table.csv
+          # Only commit if there are changes to avoid error
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update predictions" && git push)
