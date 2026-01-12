@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import math
 import random
+import os
 import requests
 
 from scipy.stats import poisson
@@ -23,7 +24,7 @@ from sklearn.pipeline import make_pipeline
 import copy
 
 # --- CONFIGURATION ---
-API_KEY = 'fb05508c56bf4ba1a6a8fbd44ced645b'
+API_KEY = os.getenv('FOOTBALL_API_KEY')
 BASE_URL = 'http://api.football-data.org/v4/competitions/PL/matches'
 HEADERS = {'X-Auth-Token': API_KEY}
 HISTORY_FILE = 'updated_results.csv'  #training data
