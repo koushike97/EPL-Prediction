@@ -337,16 +337,15 @@ lr_model.fit(X_scaled, y_train_encoded)
 
 
 
-def build_current_standings(df, current_date_str='2026-01-12'):
-    print(f"Building standings up to {current_date_str}...")
-    
-    # 1. SETUP
-    # Filter for the current season (2025) and matches played BEFORE the cutoff
-    current_date = pd.to_datetime(current_date_str)
-    
-    # Ensure Date format
+def build_current_standings(df, current_date_str=None):
+    if current_date_str is None:
+        current_date = pd.Timestamp.now().normalize()
+    else:
+        current_date = pd.to_datetime(current_date_str)
+        
+    print(f"Building standings up to {current_date.strftime('%Y-%m-%d')}...")
+    df = df.copy()
     df['Date'] = pd.to_datetime(df['Date'])
-    
     # Get only 2025 matches that have already happened
     season_df = df[
         (df['Season'] == 2025) & 
@@ -462,7 +461,7 @@ def build_current_standings(df, current_date_str='2026-01-12'):
 # EXECUTE
 # ---------------------------------------------------------
 # Usage: Pass your main 'df_poc' dataframe
-initial_stats = build_current_standings(history_df, current_date_str='2026-01-12')
+initial_stats = build_current_standings(history_df)
 
 # Check the result
 print("\n--- CALCULATED STANDINGS ---")
